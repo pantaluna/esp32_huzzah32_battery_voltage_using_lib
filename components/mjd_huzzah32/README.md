@@ -1,24 +1,49 @@
 # ESP-IDF MJD Adafruit HUZZAH32 component
-This component has been developed to expose specific functionality for the Adafruit HUZZAH32 development board (ESP32).
+This component "mjd_huzzah32" has been developed to expose specific functionality for the Adafruit HUZZAH32 development board (ESP32). This component is developed for the ESP-IDF V3 framework for the ESP32 hardware from Espressif.
 
-This component is based on the ESP-IDF V3 framework for the ESP32 hardware from Espressif.
+The features of this component:
+
+* To obtain with a simple function call the actual battery voltage of the Lion battery that is hooked up to the JST-PH2 connector.
+* To verify what method will be used by the ESP-IDF ADC component in relation to the calibration of the ADC. The ADC peripheral of the ESP32 is used for example to read the battery voltage.
+* To verify the actual VREF Voltage Reference of the ESP32. This can be done by routing the actual voltage reference value to an analog GPIO using the ADC1 or the ADC2 peripheral. And then use a multimeter to verify the VREF voltage. The value will be around 1100mV.
 
 
-
-**This component contains the following logic:**
-
-- To read the actual battery voltage level.
-- To configure the ESP32 so that the VREF (Voltage Reference) of the ESP32 can be read on GPIO#26 using e.g. a multimeter. The VREF varies slightly across dev boards. The exact value is crucial for calibrating the ADC module accurately. This measurement is only required once to obtain the exact value. This value is used afterwards to get accurate readings of the battery voltage level.
 
 Check the header file for more documentation.
+
+
+
+## Background about the calibration the ADC of the ESP32
+
+https://docs.espressif.com/projects/esp-idf/en/latest/api-reference/peripherals/adc.html#adc-calibration
+
+> The calibration of the ADC can be achieved by various means. 1) eFuse Vref. This value is measured and burned into eFuse BLOCK0 during factory calibration; 2) Two Point; 3) Default Vref specified by the user/app.
+
+
+
+Three calibration characteristic mechanisms:
+
+* "TP Two Point" BLOCK3: characterization based on Two Point values.
+* "VREF Voltage Reference" BLOCK0: characterization based on the reference voltage. Example dev boards: LOLIN D32.
+* "Default Vref": the ADC reference voltage is provided by the user as a parameter during characterization. Typical value is 1100mV. Example dev boards: Adafruit HUZZAH32.
+
+If "Two Point" or "eFuse Vref" values are unavailable, then the "Default Vref" mechanism will be used.
+
+   
+
+**For the Adafruit HUZZAH32 the "Default Vref" method is used to represent the ADC reference voltage because the eFuses for the Two Point method and the VREF Voltage Reference method are missing. So each time you have to specify a value for the ADC calibration characteristics in order to read the voltage via ADC. Typical value is 1100mV.**
 
 
 
 ## Example ESP-IDF project
 my_huzzah32_battery_voltage_using_lib
 
+
+
 ## Shop Products
 Adafruit HUZZAH32
+
+
 
 ## Data Sheets
 https://learn.adafruit.com/adafruit-huzzah32-esp32-feather
@@ -26,19 +51,17 @@ https://learn.adafruit.com/adafruit-huzzah32-esp32-feather
 
 
 ## Wiring Instructions
-Connect a LiFePO4 3.2V battery to the "3.3V" pin, or connect a Lion/LiPo 3.7V battery to the battery connector (ensure you have the polarity correct).
+Connect a Lion 3.7V battery to the battery connector (ensure you have the polarity correct).
 
-Goto the directory ../../development_boards/ for images with the GPIO PIN layout for some development boards.
+Goto the directory ../../development_boards/ for more information about some development boards.
 
 
-
-## FAQ
-- The Adafruit HUZZAH32 is the most popular made-in-the-USA ESP32 development board. They are more expensive than the Chinese ESP32 development boards but they are worth the money (Adafruit is known for good technical documentation).
-- The HUZZAH32 will trickle-charge the battery when the USB cable is attached and the battery is connected to the LiPO connector.
 
 ## Issues
 
 None.
+
+
 
 ## Reference: the ESP32 MJD Starter Kit SDK
 

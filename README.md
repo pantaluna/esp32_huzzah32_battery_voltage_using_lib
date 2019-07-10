@@ -1,11 +1,16 @@
 ## Project Description
-The main purpose of this project is to demonstrate how to obtain with a simple function call the current battery voltage on an Adafruit HUZZAH32 development board.
+The main purpose of this project is to demonstrate how to obtain with a simple function call the actual battery voltage of the Lion battery that is hooked up to the JST-PH2 connector when using the Adafruit HUZZAH32 development board.
 
-This project demonstrates the basics of using the MJD component "mjd_huzzah32" for the Adafruit HUZZAH32 development board.
 
-Use it to get insights in how to use this component.
 
-Goto the component "components/mjd_huzzah32" for the documentation.
+The program also
+
+- Verifies what method will be used by the ESP-IDF ADC component in relation to the calibration of the ADC. The ADC peripheral of the ESP32 is used for example to read the battery voltage.
+- Assists to verify the actual VREF Voltage Reference of the ESP32. This can be done by routing the actual voltage reference value to an analog GPIO using the ADC1 or the ADC2 peripheral. And then use a multimeter to verify the VREF voltage. The value will be around 1100mV.
+
+
+
+This project uses the component "mjd_huzzah32". Use it to get insights in how to use this component. Go to the component directory "components/mjd_huzzah32" for the documentation.
 
 
 
@@ -25,7 +30,7 @@ Goto the component "components/mjd_huzzah32" for the documentation.
 ```
 mkdir ~/esp
 cd    ~/esp
-git clone -b v3.3 --recursive https://github.com/espressif/esp-idf.git esp-idf-v3.2
+git clone -b v3.2 --recursive https://github.com/espressif/esp-idf.git esp-idf-v3.2
 ```
 
 - A C language editor or the Eclipse IDE CDT (instructions also @ http://esp-idf.readthedocs.io/en/latest/get-started/index.html).
@@ -33,9 +38,10 @@ git clone -b v3.3 --recursive https://github.com/espressif/esp-idf.git esp-idf-v
 
 
 ## Running the example
-- Run `make menuconfig` and verify the Voltage Reference for ADC: \
-     Component config ---> Adafruit HUZZAH32 ---> (1090) Adafruit Huzzah32 Voltage Reference in mV (typically +-1100)
+- Run `make menuconfig` and verify the settings of the "mjd_huzzah32" component:
+     - Component config => Adafruit HUZZAH32
 - Run `make flash monitor` to build and upload the example to your board and connect to its serial terminal.
+- The battery voltage is dumped in the UART debug log.
 
 
 

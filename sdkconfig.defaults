@@ -28,21 +28,21 @@ CONFIG_STACK_CHECK=y
 #   Config meteohub for RobotDyn USBUART so I can monitor execution whilst powered by the battery (no USB link then).
 #
 # make menuconfig:
-#   UART for console output (Custom)
-#   UART peripheral to use for console output (0-1) (UART0)
-#   (22) UART TX on GPIO#
-#   (23) UART RX on GPIO#
-#   (115200) UART console baud rate
+#           UART for console output (Custom)
+#           UART peripheral to use for console output (0-1) (UART0)
+#           (22) UART TX on GPIO#
+#           (23) UART RX on GPIO#
+#           (115200) UART console baud rate
 #
-CONFIG_CONSOLE_UART_DEFAULT=
-CONFIG_CONSOLE_UART_CUSTOM=y
-CONFIG_CONSOLE_UART_NONE=
-CONFIG_CONSOLE_UART_CUSTOM_NUM_0=y
-CONFIG_CONSOLE_UART_CUSTOM_NUM_1=
-CONFIG_CONSOLE_UART_NUM=0
-CONFIG_CONSOLE_UART_TX_GPIO=22
-CONFIG_CONSOLE_UART_RX_GPIO=23
-CONFIG_CONSOLE_UART_BAUDRATE=115200
+#####CONFIG_CONSOLE_UART_DEFAULT=
+#####CONFIG_CONSOLE_UART_CUSTOM=y
+#####CONFIG_CONSOLE_UART_NONE=
+#####CONFIG_CONSOLE_UART_CUSTOM_NUM_0=y
+#####CONFIG_CONSOLE_UART_CUSTOM_NUM_1=
+#####CONFIG_CONSOLE_UART_NUM=0
+#####CONFIG_CONSOLE_UART_TX_GPIO=22
+#####CONFIG_CONSOLE_UART_RX_GPIO=23
+#####CONFIG_CONSOLE_UART_BAUDRATE=115200
 
 #
 # Component => ESP-32 Specific => Panic Handler Behavior := Print registers and Halt
@@ -78,3 +78,8 @@ CONFIG_LOG_DEFAULT_LEVEL_DEBUG=
 CONFIG_LOG_DEFAULT_LEVEL_VERBOSE=
 CONFIG_LOG_DEFAULT_LEVEL=3
 CONFIG_LOG_COLORS=y
+
+#
+# LWIP
+#    ESP-IDF v3.2: LWIP_DHCP_RESTORE_LAST_IP=y
+CONFIG_LWIP_DHCP_RESTORE_LAST_IP=y

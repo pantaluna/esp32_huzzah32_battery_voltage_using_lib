@@ -6,7 +6,6 @@
 #include "mjd.h"
 #include "mjd_huzzah32.h"
 
-
 /*
  * Logging
  */
@@ -23,7 +22,6 @@ static const int MY_LED_ON_DEVBOARD_WIRING_TYPE = CONFIG_MY_LED_ON_DEVBOARD_WIRI
  */
 #define MYAPP_RTOS_TASK_STACK_SIZE_LARGE (8192)
 #define MYAPP_RTOS_TASK_PRIORITY_NORMAL (RTOS_TASK_PRIORITY_NORMAL)
-
 
 /*
  * TASK
@@ -42,8 +40,15 @@ void main_task(void *pvParameter) {
     mjd_log_chip_info();
     mjd_log_time();
     mjd_log_memory_statistics();
-    ESP_LOGI(TAG, "@doc Wait X seconds after power-on (start logic analyzer, let peripherals active)");
+    ESP_LOGI(TAG, "@doc Wait X seconds after power-on (start logic analyzer, let peripherals come active)");
     vTaskDelay(RTOS_DELAY_1SEC);
+
+    /*
+     * Logging
+     *   @doc It is possible to lower the log level for specific components.
+     *
+     */
+    esp_log_level_set("RTC_MODULE", ESP_LOG_WARN); // @important Disable INFO messages which are too detailed for me.
 
     /********************************************************************************
      * LED
@@ -53,44 +58,26 @@ void main_task(void *pvParameter) {
     ESP_LOGI(TAG, "  MY_LED_ON_DEVBOARD_GPIO_NUM:    %i", MY_LED_ON_DEVBOARD_GPIO_NUM);
     ESP_LOGI(TAG, "  MY_LED_ON_DEVBOARD_WIRING_TYPE: %i", MY_LED_ON_DEVBOARD_WIRING_TYPE);
 
-    mjd_led_config_t led_config =
-        { 0 };
+    mjd_led_config_t led_config = MJD_LED_CONFIG_DEFAULT();
     led_config.gpio_num = MY_LED_ON_DEVBOARD_GPIO_NUM;
-    led_config.wiring_type = MY_LED_ON_DEVBOARD_WIRING_TYPE; // 1 GND MCU Huzzah32 | 2 VCC MCU Lolin32lite
+    led_config.wiring_type = MY_LED_ON_DEVBOARD_WIRING_TYPE; // 1: Huzzah32 | 2: Lolin32lite LolinD32
     mjd_led_config(&led_config);
 
-    /**
-     * @brief Route the actual VREF Voltage Reference of the ESP32 to GPIO#26. Then use a multimeter to determine the voltage. The value will be around 1100mV.
-     *        PS This code is not needed to measure the actual battery voltage later on (we just need to measure the value once).
-     *        GPIO#26 is the 5th pin down from the top left of the HUZZAH32 dev board.
+    /********************************************************************************
      *
-     * The VREF for the HUZZAH32 that I'm using right now is 1086mV. And this value is entered using `make menuconfig` => Components => Adafruit HUZZAH32
-     * and used in the func that reads the battery level.
      *
-     * @return
-     *     - ESP_OK Success
      */
     ESP_LOGI(TAG, "***Routing the actual VREF Voltage Reference of the ESP32 to GPIO#26.");
     ESP_LOGI(TAG, "***    Use a multimeter to determine the voltage. The value will be around 1100mV.");
     ESP_LOGI(TAG, "");
-    f_retval = mjd_huzzah32_route_vref_to_gpio();
+    f_retval = mjd_huzzah32_route_vref_to_gpio(GPIO_NUM_26);
     if (f_retval != ESP_OK) {
         goto cleanup;
     }
 
-    /********************************************************************************
-     * Adafruit HUZZAH32: Report the features of the current ESP32 board about the ADC Calibration Characterization.
-     *  Figure out if the ESP32 eFuse contains specific information for that.
-     */
-    mjd_huzzah32_log_adc_efuses();
-    vTaskDelay(RTOS_DELAY_1SEC);
+    mjd_huzzah32_log_adc_characterisations();
 
-    /********************************************************************************
-     * Adafruit HUZZAH32: read battery voltage level
-     */
     ESP_LOGI(TAG, "LOOP: battery measurements");
-    ESP_LOGI(TAG, "");
-
     while (1) {
         mjd_led_on(MY_LED_ON_DEVBOARD_GPIO_NUM);
         ESP_LOGI(TAG, "Actual battery voltage (V): %f [Compare it with the measurement on your multimeter]", mjd_huzzah32_get_battery_voltage());

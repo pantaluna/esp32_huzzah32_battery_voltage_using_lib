@@ -22,7 +22,7 @@ git push --set-upstream origin master
 
 git remote show origin
 
-git tag --annotate v0.80 --message "First tag"
+git tag --annotate v1.0 --message "First tag"
 git push origin --tags
 
 git describe --tags --dirt
@@ -42,7 +42,7 @@ git commit -m "Updated"
 git config credential.helper store
 git push --set-upstream origin master
 
-git tag --annotate v1.3--message "Upgraded for ESP-IDF v3.2 of April 2019"
+git tag --annotate v1.4 --message "Improved documentation"
 git push origin --tags
 
 git describe --tags --dirt
